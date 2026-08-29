@@ -43,7 +43,7 @@
 |---|---|
 | Android 7.0 及以上 | ✅ 直接安装 |
 | 鸿蒙 HarmonyOS 2 ~ 4.X | ✅ 可安装 APK（兼容安卓应用） |
-| 鸿蒙 HarmonyOS NEXT（5.0+ / 纯血鸿蒙） | ✅ 先装「卓易通」（华为应用市场可下载），通过卓易通安装和使用 APK |
+| 鸿蒙 HarmonyOS NEXT（5.0+ / 纯血鸿蒙） | ✅ 系统自带「卓易通」，通过卓易通安装和使用 APK |
 
 🔄 **更新**：应用每次打开会自动检查新版本，弹窗点「去下载」即可，练习数据不会丢失。
 
@@ -244,8 +244,6 @@ cd android && gradlew.bat assembleDebug
 如果 Letit 曾陪你走过一段小小的路，欢迎请作者喝杯茶 ☕
 
 <img src="assets/donate-qr.png" width="280" alt="赞赏码"/>
-
-**你的每一份心意，都会变成继续更新的动力。**
 
 </div>
 
