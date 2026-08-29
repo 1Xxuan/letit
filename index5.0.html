@@ -1432,6 +1432,13 @@
 
     <!-- ============ 设置页 ============ -->
     <section id="settings" class="view">
+      <div class="settings-row" style="margin:14px 0 2px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;">
+        <div>
+          <div class="settings-label" style="font-size:14px;color:var(--ink);">应用更新 · 当前版本 <span id="appVerText"></span></div>
+          <div class="settings-desc">打开应用时自动检查，也可以手动检查</div>
+        </div>
+        <div class="settings-action"><button class="btn btn-soft" onclick="checkUpdate(true)">检查更新</button></div>
+      </div>
       <details class="settings-fold" open>
         <summary><span class="s-icon">·</span>练习统计</summary>
         <div class="fold-body">
@@ -1589,15 +1596,6 @@
             <button class="btn btn-ghost" onclick="cloudSaveCfg()">保存同步设置</button>
           </div>
           <div class="cloud-stat" id="cloudStat">尚未同步过。</div>
-        </div>
-
-        <div class="sub-title">应用更新</div>
-        <div class="settings-row">
-          <div>
-            <div class="settings-label">检查更新</div>
-            <div class="settings-desc">当前版本 <span id="appVerText"></span>，打开应用时也会自动检查</div>
-          </div>
-          <div class="settings-action"><button class="btn btn-ghost" onclick="checkUpdate(true)">检查</button></div>
         </div>
 
         <div class="sub-title">本地备份与清除</div>
@@ -6184,7 +6182,7 @@ document.addEventListener('scroll', _editMenuHide, true);
 })();
 
 /* ============ 检查更新（GitHub Releases） ============ */
-const APP_VERSION = "1.0.16";
+const APP_VERSION = "1.0.17";
 const UPDATE_REPO = "1Xxuan/letit";
 function _cmpVer(a, b){
   const pa = String(a).split('.'), pb = String(b).split('.');
