@@ -3539,10 +3539,26 @@ function updateStreak(){
   localStorage.setItem(K_STREAK, JSON.stringify({date:today, count}));
 }
 function matchTheme(t){
-  if(/钱|收入|财富|工资|薪|匮乏|丰盛|财务|存款|理财|债/.test(t)) return '丰盛与匮乏';
-  if(/关系|他|她|伴侣|爱人|朋友|家人|父母|孩子|同事|认可|被爱|拒绝|前任/.test(t)) return '关系与认同';
-  if(/工作|事业|项目|升职|考试|学习|公司|老板|创业|业绩|求职|考研/.test(t)) return '事业与控制';
+  const s = String(t||'');
+  if(/工作|事业|项目|升职|晋升|加薪|考试|学习|公司|老板|创业|业绩|求职|考研|绩效|面试|职业|副业/.test(s)) return '事业与控制';
+  if(/伴侣|爱人|朋友|家人|父母|孩子|同事|领导|认可|被爱|拒绝|前任|恋爱|分手|结婚|离婚|相亲|表白/.test(s)) return '关系与认同';
+  if(/钱|收入|财富|工资|薪资|匮乏|丰盛|财务|存款|理财|债|赚|房租|房贷/.test(s)) return '丰盛与匮乏';
   return '目标与显化';
+}
+/* 判断触发事件与目标是否真的相关：包含关系，或有非泛用词的两字重叠（避免任何释放都硬关联目标） */
+function goalRelated(trigger, goalName){
+  const a = String(trigger||'').replace(/\s/g,'');
+  const b = String(goalName||'').replace(/\s/g,'');
+  if(!a || !b || a.length < 2 || b.length < 2) return false;
+  if(a.includes(b) || b.includes(a)) return true;
+  const stop = ['学习','工作','时间','生活','自己','其他','感觉','现在','目标','事情','问题','公司','时候','每天','开始','继续','觉得','知道','已经','一样','这个','那个'];
+  let hits = 0, meaningful = false;
+  for(let i = 0; i <= b.length - 2; i++){
+    const bi = b.slice(i, i+2);
+    if(a.indexOf(bi) >= 0){ hits++; if(stop.indexOf(bi) < 0) meaningful = true; }
+  }
+  if(hits >= 2) return true;
+  return hits >= 1 && meaningful;
 }
 
 /* ---- 屏幕渲染基础设施 ---- */
@@ -4511,9 +4527,10 @@ function renderRecommend(){
   }
   const trackGoals = loadGoals().filter(g=>g.tracking);
   if(trackGoals.length && S.triggerEvent){
-    trackGoals.forEach(g=>{
-      cards.push({ t:`这个释放和你的目标「${g.name}」有关，要关联到它吗？`, d:'记录为一条显化观察', emph:true,
-        fn:()=>{ const goal=findGoal(g.id); if(goal) manifestAdd(goal, '自由释放：'+S.triggerEvent); alert('已关联到目标 '+g.name+''); go('home'); } });
+    const related = trackGoals.filter(g=>goalRelated(S.triggerEvent, g.name)).slice(0, 2);
+    related.forEach(g=>{
+      cards.push({ t:`把这次释放记到目标「${g.name}」吗？`, d:'记为一条显化观察，方便回看它是否在靠近', emph:true,
+        fn:()=>{ const goal=findGoal(g.id); if(goal) manifestAdd(goal, '自由释放：'+S.triggerEvent); appToast('已记录到目标 '+g.name); go('home'); } });
     });
   }
   if(S.rounds>=3){
@@ -6139,7 +6156,7 @@ document.addEventListener('scroll', _editMenuHide, true);
 })();
 
 /* ============ 检查更新（GitHub Releases） ============ */
-const APP_VERSION = "1.0.12";
+const APP_VERSION = "1.0.13";
 const UPDATE_REPO = "1Xxuan/letit";
 function _cmpVer(a, b){
   const pa = String(a).split('.'), pb = String(b).split('.');
