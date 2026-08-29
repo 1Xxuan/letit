@@ -1358,6 +1358,23 @@
         </div>
 
         <div class="card ref-sec">
+          <h3>情绪层级完整表 · AGFLAPCAP</h3>
+          <table class="emo-table">
+            <tr><th style="width:36%;">层级</th><th>常见情绪与状态</th></tr>
+            <tr><td><b>冷漠</b> Apathy<span style="display:block;font-size:11px;color:var(--ink-soft);">无望 · 无力</span></td><td>麻木、无聊、无所谓、提不起劲、疲惫、放弃、绝望、无助、空虚、迟钝、自暴自弃、没有动力</td></tr>
+            <tr><td><b>悲苦</b> Grief<span style="display:block;font-size:11px;color:var(--ink-soft);">失落 · 哀伤</span></td><td>伤心、难过、忧郁、沮丧、孤独、被抛弃感、委屈、后悔、遗憾、顾影自怜、悲观、消沉、内疚、自责</td></tr>
+            <tr><td><b>恐惧</b> Fear<span style="display:block;font-size:11px;color:var(--ink-soft);">不安 · 担忧</span></td><td>担心、焦虑、紧张、害怕、恐慌、惊恐、忐忑、多疑、胆怯、犹豫、顾虑、警惕、发怵、心神不宁</td></tr>
+            <tr><td><b>贪求</b> Lust<span style="display:block;font-size:11px;color:var(--ink-soft);">渴望 · 抓取</span></td><td>渴望、贪心、上瘾、着迷、冲动、急切、强求、占有欲、按捺不住、饥渴、停不下来、非要不可</td></tr>
+            <tr><td><b>愤怒</b> Anger<span style="display:block;font-size:11px;color:var(--ink-soft);">恼火 · 对抗</span></td><td>生气、恼火、烦躁、怨恨、愤慨、暴怒、敌意、不满、讨厌、反抗、发脾气、气不打一处来</td></tr>
+            <tr><td><b>骄傲</b> Pride<span style="display:block;font-size:11px;color:var(--ink-soft);">防御 · 优越</span></td><td>骄傲、自大、优越感、清高、固执、自以为是、看不起、防备、否认、专横、完美主义、死不认错</td></tr>
+            <tr><td><b>无畏</b> Courageousness<span style="display:block;font-size:11px;color:var(--ink-soft);">行动 · 敢做</span></td><td>果断、自信、主动、开放、有弹性、敢冒险、敢担当、幽默、生机勃勃、愿意尝试</td></tr>
+            <tr><td><b>接纳</b> Acceptance<span style="display:block;font-size:11px;color:var(--ink-soft);">允许 · 包容</span></td><td>理解、宽容、平衡、欣赏、自在、信任、安心、能接受、不纠结、乐于合作、如其所是</td></tr>
+            <tr><td><b>平安</b> Peace<span style="display:block;font-size:11px;color:var(--ink-soft);">宁静 · 圆满</span></td><td>平静、安详、喜悦、自由、轻盈、满足、慈悲、活在当下、完整、合一、无条件的安心</td></tr>
+          </table>
+          <div class="m6-mini" style="margin-top:8px;">下面三层最沉重，往上越来越轻。低层情绪不是敌人——看见它、允许它，它自己会往上走。</div>
+        </div>
+
+        <div class="card ref-sec">
           <h3>欲望释放速查</h3>
           <div class="flow">
             <div class="flow-step"><div class="flow-num">1</div><div class="flow-body">感受：这背后是什么？</div></div>
@@ -2532,7 +2549,7 @@ function goalRenderActions(){
   m6prog('目标释放 · 翻面 → 行动步骤');
   m2set('<div class="m6-card">'+
     '<div class="m6-guide">现在翻到背面。如果要达成这个目标，你觉得需要做些什么？<br>把想到的都写下来，一条一行。</div>'+
-    '<textarea class="m6ta" id="m2-actions" placeholder="必须先做完调研&#10;必须得到领导认可&#10;必须每天工作12小时……"></textarea>'+
+    '<textarea class="m6ta" id="m2-actions" style="min-height:160px;" placeholder="必须先做完调研&#10;必须得到领导认可&#10;必须每天工作12小时……"></textarea>'+
     '<button class="btn btn-primary btn-full" style="margin-top:12px;" onclick="goalActionsSubmit()">就这些了，开始逐条释放</button>'+
     '<div class="m6-mini" onclick="goalFlow(\'detail\')">先回目标表格</div></div>');
 }
@@ -6122,7 +6139,7 @@ document.addEventListener('scroll', _editMenuHide, true);
 })();
 
 /* ============ 检查更新（GitHub Releases） ============ */
-const APP_VERSION = "1.0.11";
+const APP_VERSION = "1.0.12";
 const UPDATE_REPO = "1Xxuan/letit";
 function _cmpVer(a, b){
   const pa = String(a).split('.'), pb = String(b).split('.');
