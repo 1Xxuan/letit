@@ -53,8 +53,11 @@ def git(*args):
 git("add", "-A")
 if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT).returncode != 0:
     git("commit", "-m", "release %s: %s" % (tag, note))
-git("push", "origin", "main")
-print("源码已同步到 main")
+try:
+    git("push", "origin", "main")
+    print("源码已同步到 main")
+except SystemExit:
+    print("警告：源码推送失败（GitHub 网络波动），本次仅发布 APK；稍后可重跑 publish_release.py 补推源码")
 
 
 def api(url, data=None, headers=None, is_json=True):
