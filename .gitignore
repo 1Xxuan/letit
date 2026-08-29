@@ -1,17 +1,30 @@
 # ===== 密钥与本地配置（绝不入库）=====
 .github_token
+.github_repo
 .git_askpass.sh
 .git_askpass.bat
 android/local.properties
 
+# ===== 个人构建/发布工具（自用，不入库）=====
+build-apk.bat
+bump_version.py
+publish_release.py
+
 # ===== 依赖与构建产物 =====
 node_modules/
+package-lock.json
 www/index.html
 android/app/build/
 android/build/
 android/.gradle/
 android/app/src/main/assets/
 android/capacitor-cordova-android-plugins/
+
+# ===== 旧版本与个人文档 =====
+index4.0.html
+SEDONA_50_SPEC.md
+APK打包说明.md
+icon/ios/
 
 # ===== 本地大文件与备份 =====
 _android-sdk/

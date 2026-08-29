@@ -27,7 +27,7 @@ npx cap sync android
 cd android && gradlew.bat assembleDebug
 ```
 
-或直接运行 `build-apk.bat`（自动完成版本递增、资源同步、编译、安装到连接的手机，并可选发布 Release）。
+构建产物在 `android\app\build\outputs\apk\debug\app-debug.apk`。
 
 ## 技术
 
