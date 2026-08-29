@@ -3486,6 +3486,7 @@ function importQuotes(input){
 /* ============ 智能引导陪练引擎 ============ */
 const K_SESS = 'releasing-sessions';
 const K_STREAK = 'releasing-streak';
+const K_TRIGS = 'releasing-triggers';
 const THREE_Q = ['你能让它离开吗？', '你愿意让它离开吗？', '什么时候？'];
 const THEME_GROUPS = {
   '丰盛与匮乏': [
@@ -3529,6 +3530,21 @@ function freshState(){
 function loadSessions(){ try{ return JSON.parse(localStorage.getItem(K_SESS)||'[]'); }catch(e){ return []; } }
 function saveSessions(a){ localStorage.setItem(K_SESS, JSON.stringify(a)); }
 function getCompleteCount(){ return loadSessions().filter(s=>s.status==='complete').length; }
+/* 触发主题独立记录：只要写下主题就算（不要求走完全流程），供首页快捷入口使用 */
+function saveTriggerTheme(t){
+  t = String(t||'').trim();
+  if(!t || t.length < 2) return;
+  let a = [];
+  try{ a = JSON.parse(localStorage.getItem(K_TRIGS)||'[]'); }catch(e){}
+  if(!Array.isArray(a)) a = [];
+  a = a.filter(x=>x !== t);
+  a.push(t);
+  try{ localStorage.setItem(K_TRIGS, JSON.stringify(a.slice(-20))); }catch(e){}
+}
+function loadTriggerThemes(){
+  try{ const a = JSON.parse(localStorage.getItem(K_TRIGS)||'[]'); return Array.isArray(a) ? a : []; }
+  catch(e){ return []; }
+}
 function dsKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function updateStreak(){
   const today = dsKey(new Date());
@@ -3626,7 +3642,7 @@ function m6show(){
   window.scrollTo(0,0);
 }
 function m6open(){ S=freshState(); m6show(); m6goto('open'); }
-function m6openDig(topic){ S=freshState(); S.mode='dig'; S.digTopic=topic; S.triggerEvent=topic; S.afterRecord='digStart'; m6show(); m6goto('digStart'); }
+function m6openDig(topic){ S=freshState(); S.mode='dig'; S.digTopic=topic; S.triggerEvent=topic; saveTriggerTheme(topic); S.afterRecord='digStart'; m6show(); m6goto('digStart'); }
 function m6openGoal(){ S=freshState(); S.mode='goal'; S.themeTag='目标与显化'; m6show(); m6goto('goalInput'); }
 function m6openStuck(){ S.stuckStep=0; S.loopPhase='branch'; S.branch='stuck'; m6show(); m6goto('loop'); }
 
@@ -3645,6 +3661,7 @@ function m6Coach(topic, mode){
   S.mode = mode || 'main';
   S.triggerEvent = (topic||'').trim();
   S.emotion = (topic||'').trim();
+  saveTriggerTheme(S.triggerEvent);
   m6show();
   startLoop();
 }
@@ -3674,6 +3691,7 @@ function m6saveTrigger(){
   const v = document.getElementById('m6-trigger').value.trim();
   if(!v){ alert('先简单写一下是什么触动了你吧～'); return; }
   S.triggerEvent = v;
+  saveTriggerTheme(v);
   const rk = detectResistText(v);
   if(rk){ enterResistLayer(rk, {text:v}); return; }
   m6goto('classify');
@@ -5857,12 +5875,18 @@ function aiEnter(){
 
 function renderTriggered(){
   const el = document.getElementById('trigChips'); if(!el) return;
-  const sess = loadSessions().filter(s=>s.trigger).slice(-40).reverse();
   const seen = new Set(); const tops = [];
-  sess.forEach(s=>{ if(!seen.has(s.trigger)){ seen.add(s.trigger); tops.push(s.trigger); } });
+  /* 来源1：写过触发主题就算（不要求走完全流程，最近的排前面） */
+  loadTriggerThemes().slice().reverse().forEach(t=>{
+    if(!seen.has(t)){ seen.add(t); tops.push(t); }
+  });
+  /* 来源2：完成记录里的主题兜底 */
+  loadSessions().filter(s=>s.trigger).slice(-40).reverse().forEach(s=>{
+    if(!seen.has(s.trigger)){ seen.add(s.trigger); tops.push(s.trigger); }
+  });
   const list = tops.slice(0,5);
   if(list.length===0){
-    el.innerHTML = '<div class="trig-empty">还没有记录到触发主题。完成一次带事件的释放后，这里会出现快捷入口。</div>';
+    el.innerHTML = '<div class="trig-empty">还没有记录到触发主题。在练习里写下触动你的事件后，这里会出现快捷入口。</div>';
     return;
   }
   el.innerHTML = list.map(t=>`<span class="trig-chip" data-t="${escapeHtml(t)}">${escapeHtml(t)}</span>`).join('');
@@ -6160,7 +6184,7 @@ document.addEventListener('scroll', _editMenuHide, true);
 })();
 
 /* ============ 检查更新（GitHub Releases） ============ */
-const APP_VERSION = "1.0.15";
+const APP_VERSION = "1.0.16";
 const UPDATE_REPO = "1Xxuan/letit";
 function _cmpVer(a, b){
   const pa = String(a).split('.'), pb = String(b).split('.');
