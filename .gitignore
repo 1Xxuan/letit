@@ -1,0 +1,27 @@
+# ===== 密钥与本地配置（绝不入库）=====
+.github_token
+.git_askpass.sh
+android/local.properties
+
+# ===== 依赖与构建产物 =====
+node_modules/
+www/index.html
+android/app/build/
+android/build/
+android/.gradle/
+android/app/src/main/assets/
+android/capacitor-cordova-android-plugins/
+
+# ===== 本地大文件与备份 =====
+_android-sdk/
+*.zip
+*.apk
+_backup/
+tests_50/
+_icon_preview.png
+_apk_icon_check.png
+_splash_check.png
+
+# ===== 系统文件 =====
+Thumbs.db
+.DS_Store

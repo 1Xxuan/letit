@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Letit</string>
+    <string name="title_activity_main">Letit</string>
+    <string name="package_name">com.sedona.release</string>
+    <string name="custom_url_scheme">com.sedona.release</string>
+</resources>
