@@ -11,9 +11,10 @@ bump_version.py
 publish_release.py
 
 # ===== 依赖与构建产物 =====
+www/index.html
 node_modules/
 package-lock.json
-www/index.html
+
 android/app/build/
 android/build/
 android/.gradle/
