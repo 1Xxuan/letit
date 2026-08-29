@@ -4,6 +4,7 @@
 import json
 import os
 import re
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -18,6 +19,22 @@ apk = os.path.join(ROOT, "android/app/build/outputs/apk/debug/app-debug.apk")
 note = sys.argv[1] if len(sys.argv) > 1 else "修复与体验优化"
 tag = "v" + ver
 name = "letit-v%s.apk" % ver
+
+
+def git(*args):
+    env = dict(os.environ)
+    env["GIT_ASKPASS"] = os.path.join(ROOT, ".git_askpass.bat")
+    env["GIT_TERMINAL_PROMPT"] = "0"
+    subprocess.run(["git", *args], check=True, cwd=ROOT, env=env,
+                   stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+
+# 先把最新源码推上去，让 Release 标签落在最新提交上
+git("add", "-A")
+if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=ROOT).returncode != 0:
+    git("commit", "-m", "release %s: %s" % (tag, note))
+git("push", "origin", "main")
+print("源码已同步到 main")
 
 
 def api(url, data=None, headers=None, is_json=True):

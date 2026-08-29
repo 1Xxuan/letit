@@ -1,6 +1,7 @@
 # ===== 密钥与本地配置（绝不入库）=====
 .github_token
 .git_askpass.sh
+.git_askpass.bat
 android/local.properties
 
 # ===== 依赖与构建产物 =====
