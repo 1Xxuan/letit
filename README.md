@@ -1,42 +1,221 @@
-# Letit
+<div align="center">
 
-基于「圣多纳释放法」的中文自我练习应用（Android，Capacitor 封装）。
+# ✋ Letit
 
-## 下载
+**基于「圣多纳释放法」的自我练习应用**
 
-- 最新版：https://github.com/1Xxuan/letit/releases/latest
-- 下载 APK 直接安装（首次需允许"安装未知应用"）
-- 应用内置自动检查更新，有新版本时打开会提示
+让情绪被看见，让放下变得简单
 
-## 功能
+[![Release](https://img.shields.io/github/v/release/1Xxuan/letit?style=flat-square&label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC)](https://github.com/1Xxuan/letit/releases/latest)
+[![License](https://img.shields.io/badge/%E5%8D%8F%E8%AE%AE-MIT-green?style=flat-square)](LICENSE)
+[![Platform](https://img.shields.io/badge/%E5%B9%B3%E5%8F%B0-Android%20%7C%20%E7%BD%91%E9%A1%B5-6B8C5A?style=flat-square)](https://github.com/1Xxuan/letit/releases/latest)
+[![Size](https://img.shields.io/badge/%E5%AE%89%E8%A3%85%E5%8C%85-~15MB-orange?style=flat-square)](https://github.com/1Xxuan/letit/releases/latest)
 
-- 释放练习流程引导（含「没什么感受」问句包）
-- AI 引导师：可接入 DeepSeek / 智谱 / Moonshot / SiliconFlow 等（使用自己的 API Key，仅存本地）
-- 语音朗读：系统 TTS / SiliconFlow / Qwen TTS / Kokoro 本地部署
-- 云同步备份：WebDAV（坚果云等）/ S3 兼容存储
-- 语录收藏、目标与收获记录
+**[📥 下载最新版](https://github.com/1Xxuan/letit/releases/latest)** · [使用说明](#-使用说明) · [AI 配置](#-ai-引导配置) · [常见问题](#-常见问题) · [赞赏](#-赞赏)
 
-## 从源码构建
+</div>
 
-需要：Node.js、Python 3、JDK 17+、Android SDK（含 platform 36 / build-tools 35+）。
+---
+
+## 📖 这是什么？
+
+**Letit** 是一个把圣多纳释放法（Sedona Method）装进口袋的练习册。它不评判你、不催促你，只是陪你完成一件很简单的事：
+
+> 觉察此刻的感受 → 允许它存在 → 放它走。
+
+你可以用它释放一件被触发的小事，也可以围绕一个重要目标做深度练习，还可以让 AI 陪你一句一句地把感受松开。
+
+所有数据都保存在你自己的手机里，没有账号、没有上传、没有广告。
+
+---
+
+## 📥 下载安装
+
+| 你的情况 | 选择 | 怎么做 |
+|---|---|---|
+| 安卓手机 | **APK 安装包** | 下载 `letit-vX.X.X.apk` → 打开安装（首次需允许"安装未知应用"） |
+| iPhone / 装不了 APK | **网页版 HTML** | 下载 `letit-vX.X.X.html` → 用 Safari 或其他浏览器打开即可，字体已内置，无需联网 |
+
+📦 **下载地址**：[Releases · 最新版本](https://github.com/1Xxuan/letit/releases/latest)
+
+🔄 **保持更新**：安装 APK 后，应用每次打开会自动检查新版本，有更新会弹提示，点"去下载"即可。
+
+---
+
+## 🚀 使用说明
+
+### 🏠 首页
+
+- **每日语录**：每次打开随机一句，点「换一条」刷新，可固定喜欢的句子
+- **连续天数**：记录你连续练习的日子，坚持看得见
+- **今天被触发的主题**：练习里写下触发事件后，这里会出现快捷入口，点一下就能针对这个主题再深挖
+
+### 🧘 练习（核心功能）
+
+练习页有四个模块，按需选择：
+
+<details>
+<summary><b>陪练引擎</b> —— 标准引导流程（推荐从这里开始）</summary>
+
+1. **写下触动事件**：什么事让你有了感觉？
+2. **识别感受**：从情绪里认出此刻的状态（不确定也没关系，流程会带你）
+3. **三问句循环**：
+   - 你能让它离开吗？
+   - 你愿意让它离开吗？
+   - 什么时候？
+4. **无论答案是能还是不能**，继续下一轮就好——释放不靠用力
+5. **结束记录**：给轻松度打个分，写一句变化（也可以跳过备注，练习照样计数）
+
+走不动的时候，引擎会自动切换策略：深层阻抗、安全阀、换个问法……你只管跟着走。
+
+</details>
+
+<details>
+<summary><b>目标释放</b> —— 围绕一个重要目标做深度清理</summary>
+
+1. 写下你的目标（比如"今年当上主管"）
+2. 应用自动识别主题分类（AI 在线时会判断得更准，分类可以手动点选修正）
+3. 跟着主题问句，释放对目标的抓取与恐惧
+4. **翻面 → 行动步骤**：写下你认为"必须做"的事，逐条释放背后的阻力
+5. 完成后可在目标页持续**跟踪**：记录显化观察，回看它是否在靠近
+
+</details>
+
+<details>
+<summary><b>根本欲望识别</b></summary>
+
+直接往深挖一层：这件事背后，是想要<b>被认同</b>、想要<b>控制</b>，还是想要<b>安全</b>？
+
+三大想要是所有感受的地基。放下对它们的执着，想要的一切会自然发生。
+
+</details>
+
+<details>
+<summary><b>AI 引导</b> —— 让 AI 陪你一句一句释放</summary>
+
+配置自己的 AI 后（[见下方配置指南](#-ai-引导配置)），你会得到一个 24 小时在线的引导师：
+
+- **温柔拆解**风格：先接住情绪，再拆解信念，引用莱斯特的话，落回释放
+- **简单直接**风格：不铺垫，直问想要——「目标必须实现，这是想要控制，对吗？」
+- 发现限制性信念时自动生成**信念卡片**，点「带我释放它」直接进入释放流程
+- 练习中随时点「✦ 让 AI 贴合我换个问法」，AI 会把标准问句改写成贴合你目标的版本
+
+</details>
+
+### 📔 记录
+
+- **收获本**：每次完成练习的记录都在这里，看到自己的变化轨迹
+- **速查**：
+  - 情绪释放三问句速查
+  - 欲望释放速查
+  - 卡住时怎么办
+  - **情绪层级完整表**（AGFLAPCAP 中英对照，414 个情绪词，点击层级展开）
+
+### 🎯 目标跟踪
+
+在目标页添加目标后，可以记录"此刻的感受"和"行动步骤"，持续跟踪它们被释放的进度。当目标相关的显化出现时（生活中注意到的变化），记一条**显化观察**——这是假设法则落地的证据链。
+
+### ⚙️ 设置
+
+- **AI 引导**：服务商预设 / 接口地址 / 模型 / API Key / 风格 / 附加提示词
+- **语音朗读**：系统内置 TTS（免费离线）/ SiliconFlow / Qwen TTS / Kokoro 本地部署 / 讯飞
+- **释放问句包**：内置五类问句，可自定义分类、增减问句、导入导出分享
+- **数据管理**：导出 / 导入全部数据（JSON）、云同步（WebDAV·坚果云 / S3）、清除数据
+- **应用更新**：显示当前版本，手动检查更新（打开应用时也会自动检查）
+
+---
+
+## 🤖 AI 引导配置
+
+1. 打开 **设置 → AI 引导**
+2. **服务商预设**里选一家（DeepSeek / 智谱 / Moonshot / SiliconFlow / Qwen / 讯飞 / OpenAI 兼容地址均可）
+3. 填入你的 **API Key**（在各服务商官网注册后创建，与应用无任何绑定关系）
+4. 给 AI 起个名字，选好引导风格，保存
+
+> 💡 **没有 Key？** 推荐从 DeepSeek 开始，注册即送额度，成本低。
+>
+> 🔒 Key 只保存在你设备本地，不会上传到任何服务器。没有配置 AI 时，除 AI 引导外的全部功能照常可用。
+
+---
+
+## ☁️ 数据安全
+
+- 所有练习数据默认**只存在本机**
+- 担心丢失？两种方式保护：
+  1. **设置 → 数据管理 → 导出所有数据**，定期导出 JSON 文件保存
+  2. **云同步备份**：填入你的坚果云 WebDAV 或任意 S3 兼容存储，自动定时上传
+
+---
+
+## ❓ 常见问题
+
+<details>
+<summary><b>输入框里没法粘贴？</b></summary>
+
+在输入框上**长按**，会弹出「粘贴 / 全选 / 复制 / 剪切」菜单，全部走原生剪贴板接口，不依赖系统菜单。如果提示读取失败，请到系统设置里允许应用使用剪贴板。
+</details>
+
+<details>
+<summary><b>怎么检查更新？</b></summary>
+
+设置页拉到最底部 →「应用更新」→ 检查更新。平时打开应用也会自动检查，有新版会弹窗提示。
+</details>
+
+<details>
+<summary><b>练习了但是"完成练习"没变化？</b></summary>
+
+「完成练习」统计的是**走完整轮引导流程**的次数。中途退出不计入；走到最后一步时无论点「记入收获本」还是「跳过备注，继续」都会计入。
+</details>
+
+<details>
+<summary><b>AI 回复报错？</b></summary>
+
+依次检查：API Key 是否填对、账户是否有额度、服务商接口是否有变动。换个服务商预设再试也是快捷办法。
+</details>
+
+<details>
+<summary><b>安卓返回键会直接退出吗？</b></summary>
+
+不会。返回键会按层级处理：收起键盘 → 关闭弹窗 → 回到首页；在首页时需两秒内按两次才会退出。
+</details>
+
+---
+
+## 🛠 从源码构建
+
+需要：Node.js、JDK 17+、Android SDK（platform 36 / build-tools 35+）。
 
 ```bat
+git clone https://github.com/1Xxuan/letit.git
+cd letit
 npm install
 copy index5.0.html www\index.html
 npx cap sync android
 cd android && gradlew.bat assembleDebug
 ```
 
-构建产物在 `android\app\build\outputs\apk\debug\app-debug.apk`。
+产物：`android\app\build\outputs\apk\debug\app-debug.apk`
 
-## 技术
+核心应用是一个单文件 Web 应用（`index5.0.html`），理论上任何现代浏览器打开即可运行。
 
-Capacitor 8 + Android WebView，单文件 Web 应用；正文字体为 [霞鹜文楷](https://github.com/lxgw/LxgwWenKai)（SIL OFL 1.1）。
+---
 
-## 声明
+## 📄 免责声明
 
-本项目仅供个人学习与自我练习，不构成任何心理治疗建议；与圣多纳释放法原方法及其作者无关。
+本项目仅供个人学习与自我练习使用，不构成任何医疗或心理治疗建议；如你正处于严重的情绪困扰中，请寻求专业帮助。本项目与圣多纳释放法原方法、原书作者及其机构无任何关联。
 
-## License
+## 💖 赞赏
 
-MIT
+<div align="center">
+
+如果 Letit 曾陪你走过一段小小的路，欢迎请作者喝杯茶 ☕
+
+*（赞赏码待补）*
+
+**你的每一份心意，都会变成继续更新的动力。**
+
+</div>
+
+## 📜 License
+
+[MIT](LICENSE) · 字体 [霞鹜文楷](https://github.com/lxgw/LxgwWenKai)（SIL OFL 1.1）
