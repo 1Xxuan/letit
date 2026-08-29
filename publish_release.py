@@ -35,11 +35,18 @@ name = "letit-v%s.apk" % ver
 
 
 def git(*args):
+    import base64
+    auth = base64.b64encode(("x-access-token:" + token).encode()).decode()
+    header = "Authorization: Basic " + auth
     env = dict(os.environ)
-    env["GIT_ASKPASS"] = os.path.join(ROOT, ".git_askpass.bat")
     env["GIT_TERMINAL_PROMPT"] = "0"
-    subprocess.run(["git", *args], check=True, cwd=ROOT, env=env,
-                   stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = ["git", "-c", "http.extraheader=" + header, *args]
+    r = subprocess.run(cmd, cwd=ROOT, env=env,
+                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if r.returncode != 0:
+        out = r.stdout.decode("utf-8", "ignore").replace(header, "***")
+        print("git 命令失败: git " + " ".join(args) + "\n" + out)
+        sys.exit(1)
 
 
 # 先把最新源码推上去，让 Release 标签落在最新提交上
