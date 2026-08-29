@@ -25,11 +25,17 @@ src = src[:m.start()] + f'versionName "{name}"' + src[m.end():]
 open(path, "w", encoding="utf-8", newline="").write(src)
 
 htmlp = "index5.0.html"
-html = open(htmlp, encoding="utf-8").read()
-m2 = re.search(r'const APP_VERSION = "([^"]*)"', html)
-if m2:
-    html = html[:m2.start()] + f'const APP_VERSION = "{name}"' + html[m2.end():]
-    open(htmlp, "w", encoding="utf-8", newline="").write(html)
-    print(f"versionCode -> {code}, versionName -> {name} (APP_VERSION 已同步)")
-else:
-    print(f"versionCode -> {code}, versionName -> {name} (未找到 APP_VERSION 常量)")
+old_const = 'const APP_VERSION = "'
+new_const = f'const APP_VERSION = "{name}"'
+for f in (htmlp, "www/index.html"):
+    try:
+        html = open(f, encoding="utf-8").read()
+    except FileNotFoundError:
+        continue
+    i = html.find(old_const)
+    if i < 0:
+        continue
+    j = html.index('"', i + len(old_const)) + 1
+    html = html[:i] + new_const + html[j:]
+    open(f, "w", encoding="utf-8", newline="").write(html)
+print(f"versionCode -> {code}, versionName -> {name} (APP_VERSION 已同步到 index5.0.html 和 www/index.html)")

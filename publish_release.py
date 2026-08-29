@@ -16,6 +16,19 @@ repo = open(os.path.join(ROOT, ".github_repo"), encoding="utf-8").read().strip()
 ver = re.search(r'versionName "([^"]+)"',
                 open(os.path.join(ROOT, "android/app/build.gradle"), encoding="utf-8").read()).group(1)
 apk = os.path.join(ROOT, "android/app/build/outputs/apk/debug/app-debug.apk")
+
+# 校验包内 APP_VERSION 与 versionName 一致，防止把旧版本号的包发出去
+import zipfile
+try:
+    zhtml = zipfile.ZipFile(apk).read("assets/public/index.html").decode("utf-8")
+    mver = re.search(r'const APP_VERSION = "([^"]*)"', zhtml)
+    in_apk = mver.group(1) if mver else None
+except Exception:
+    in_apk = None
+if in_apk != ver:
+    print("中止：APK 内 APP_VERSION(%s) 与 versionName(%s) 不一致，请重新构建再发布" % (in_apk, ver))
+    sys.exit(1)
+
 note = sys.argv[1] if len(sys.argv) > 1 else "修复与体验优化"
 tag = "v" + ver
 name = "letit-v%s.apk" % ver
