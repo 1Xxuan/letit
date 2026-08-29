@@ -1625,10 +1625,10 @@
   <div class="modal-card">
     <div class="m6-guide" id="mm-title"></div>
     <textarea class="m6ta" id="mm-note" placeholder="任何小的变化都算数……"></textarea>
-    <div style="margin-top:12px;display:flex;gap:10px;">
-      <button class="btn btn-ghost" style="flex:1;" onclick="mmDefer()">稍后再说</button>
-      <button class="btn btn-ghost" style="flex:1;" onclick="mmClose(true)">今天没什么特别的</button>
-      <button class="btn btn-primary" style="flex:1;" onclick="mmSave()">记下变化</button>
+    <div class="nav-row compact" style="margin-top:12px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" onclick="mmDefer()">稍后再说</button>
+      <button class="btn btn-ghost" onclick="mmClose(true)">今天没什么特别的</button>
+      <button class="btn btn-primary" onclick="mmSave()">记下变化</button>
     </div>
     <div class="m6-mini" style="text-align:center;margin-top:8px;" onclick="mmStop()">不想再跟踪了</div>
   </div>
@@ -4043,15 +4043,16 @@ async function m6AiRewrite(){
     return;
   }
   const std = SENTENCES[S.q] ? SENTENCES[S.q].q : '';
-  const ctxParts=[ S.triggerEvent, S.digTopic, S.emotion, S.goalText,
-                   (S.goalObj&&S.goalObj.name)||'',
-                   (S.listMode&&S.list&&S.list[S.listIdx]) ? S.list[S.listIdx].content : '' ];
-  const ctx=ctxParts.filter(Boolean).join(' / ');
+  const tracked=(function(){ try{ return loadGoals().filter(g=>g.tracking).map(g=>g.name).slice(0,3); }catch(e){ return []; } })();
+  const ctxParts=[ (S.goalObj&&S.goalObj.name), S.goalText, S.digTopic, S.triggerEvent, S.emotion,
+                   (S.listMode&&S.list&&S.list[S.listIdx]) ? S.list[S.listIdx].content : '' ].filter(Boolean);
+  if(tracked.length) ctxParts.push('正在跟踪的目标：'+tracked.join('、'));
+  const ctx=ctxParts.join(' / ');
   try{
     m6prog('AI 正在换一种问法…');
     const r=await aiComplete([
       { role:'system', content:'你是圣多纳释放法引导师。只输出改写后的一句中文问句本身：不带引号、编号或任何解释，不超过 26 个字。'+(aiLoadCfg().style==='direct'?' 风格要求：简单直接、朴素直问。':' 风格要求：温柔一点，可以在问句里带轻微的接住情绪的措辞，但仍只输出一句。') },
-      { role:'user', content:'标准问句：「'+std+'」。\n用户此刻的主题/情绪：'+(ctx||'（未提供，保持通用）')+'\n请在不改变这句问句功能（能力/意愿/时机）的前提下，写一个贴合这个主题的具体版本。可以用许可式句式：「我可不可以想要……」或「我能不能允许自己……」。' }
+      { role:'user', content:'标准问句：「'+std+'」。\n用户此刻的主题/情绪：'+(ctx||'（未提供，保持通用）')+'\n要求：问句要贴合用户的目标或正在处理的具体事情本身；如果主题是"没什么感受 / 没有感觉"之类的状态描述，不要围绕这个状态发问，而是围绕它背后的目标或事情。在不改变这句问句功能（能力/意愿/时机）的前提下，写一个贴合主题的具体版本。可以用许可式句式：「我可不可以想要……」或「我能不能允许自己……」。' }
     ],{ stream:false });
     const q=(r.content||'').trim().replace(/^["「『]+|["」』]+$/g,'').split('\n')[0];
     if(q) S.aiQ=q.slice(0,40);
@@ -4449,7 +4450,7 @@ function renderRecord(){
       <div style="font-size:13px;color:var(--ink-soft);margin:14px 0 6px;font-weight:600;">想记点什么变化？（选填）</div>
       <textarea class="m6ta" id="m6-change" placeholder="例如：胸口松了一些 / 对${escapeHtml(S.emotion||'这件事')}没那么紧了"></textarea>
       <div class="nav-row" style="margin-top:14px;display:flex;gap:10px;">
-        <button class="btn btn-ghost" style="flex:1;" onclick="m6afterRecord(true)">暂不计，继续</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="m6afterRecord(true)">跳过备注，继续</button>
         <button class="btn btn-primary" style="flex:1;" onclick="m6afterRecord(false)">记入收获本</button>
       </div>
     </div>`);
@@ -4468,6 +4469,9 @@ function m6saveRecord(){
   gains.push({ id:Date.now(), date:ds, theme:theme, change:(chg+' '+ease).trim(), feel:(S.rating>=3?'good':'mid') });
   saveGains(gains);
   if(S.mode==='dig') S.layers++;
+  m6countSession();
+}
+function m6countSession(){
   const sess = loadSessions();
   sess.push({ time:Date.now(), mode:S.mode, trigger:S.triggerEvent||S.digTopic||'', emotion:S.emotion||'', rounds:S.rounds, layers:S.layers, status:'complete' });
   saveSessions(sess);
@@ -4475,7 +4479,7 @@ function m6saveRecord(){
   S.complete = getCompleteCount();
 }
 function m6afterRecord(skip){
-  if(!skip) m6saveRecord();
+  if(!skip) m6saveRecord(); else m6countSession();
   if(S.afterRecord==='digStart') m6goto('digStart');
   else if(S.afterRecord==='goalAfter') m6goto('goalAfter');
   else m6goto('recommend');
@@ -6116,7 +6120,7 @@ document.addEventListener('scroll', _editMenuHide, true);
 })();
 
 /* ============ 检查更新（GitHub Releases） ============ */
-const APP_VERSION = "1.0.9";
+const APP_VERSION = "1.0.10";
 const UPDATE_REPO = "1Xxuan/letit";
 function _cmpVer(a, b){
   const pa = String(a).split('.'), pb = String(b).split('.');
