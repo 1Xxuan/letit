@@ -4583,11 +4583,35 @@ function renderRecommend(){
   }
   const trackGoals = loadGoals().filter(g=>g.tracking);
   if(trackGoals.length && S.triggerEvent){
-    const related = trackGoals.filter(g=>goalRelated(S.triggerEvent, g.name)).slice(0, 2);
+    let related = trackGoals.filter(g=>goalRelated(S.triggerEvent, g.name)).slice(0, 2);
+    /* AI 判断的相关目标并入（离线时保留关键词兜底结果） */
+    if(S._aiRel && S._aiRel.trig === S.triggerEvent && Array.isArray(S._aiRel.names)){
+      S._aiRel.names.forEach(n=>{
+        const g = trackGoals.find(x=>x.name===n);
+        if(g && !related.some(x=>x.id===g.id)) related.push(g);
+      });
+      related = related.slice(0, 3);
+    }
     related.forEach(g=>{
       cards.push({ t:`把这次释放记到目标「${g.name}」吗？`, d:'记为一条显化观察，方便回看它是否在靠近', emph:true,
         fn:()=>{ const goal=findGoal(g.id); if(goal) manifestAdd(goal, '自由释放：'+S.triggerEvent); appToast('已记录到目标 '+g.name); go('home'); } });
     });
+    /* 配置了 AI 时异步判定相关性，完成后刷新本页（关键词匹配只作离线兜底） */
+    if(aiReady() && !(S._aiRel && S._aiRel.trig === S.triggerEvent) && !S._aiRelPending){
+      S._aiRelPending = true;
+      aiComplete([
+        { role:'system', content:'你是判断器。只输出 JSON 数组，不输出任何解释或代码块标记。' },
+        { role:'user', content:'判断这次释放的触发主题与哪些目标实质相关：主题在说目标相关的事情、或情绪围绕目标展开，才算相关；纯情绪词、无关事件不算。\n触发主题：「'+S.triggerEvent+'」\n目标列表：'+JSON.stringify(trackGoals.map(g=>g.name))+'\n只输出相关目标名的 JSON 数组，如 ["目标A"]；没有相关的输出 []。' }
+      ], { stream:false }).then(r=>{
+        S._aiRelPending = false;
+        const m = String(r.content||'').match(/\[[\s\S]*?\]/);
+        const names = m ? JSON.parse(m[0]) : null;
+        if(Array.isArray(names)){
+          S._aiRel = { trig: S.triggerEvent, names: names.filter(n=>trackGoals.some(g=>g.name===n)) };
+          if(S.stage==='recommend') renderRecommend();
+        }
+      }).catch(()=>{ S._aiRelPending = false; });
+    }
   }
   if(S.rounds>=3){
     cards.push({ t:'状态不错，可继续或收工', d: S.triggerEvent?'带着这个主题继续深入，或今天就到这里':'再走一遍，或今天就到这里', fn:()=> S.triggerEvent? m6openDig(S.triggerEvent) : m6open() });
@@ -4640,8 +4664,25 @@ function renderGoalInput(){
 function m6goalStart(){
   const g = document.getElementById('m6-goal').value.trim();
   if(!g){ alert('先写下一个目标吧～'); return; }
-  S.goalText = g; S.themeTag = matchTheme(g); S.afterRecord = 'goalAfter'; S.q = 0; initLoopFields();
+  S.goalText = g; S.themeTag = matchTheme(g); S._themeManual = false; S.afterRecord = 'goalAfter'; S.q = 0; initLoopFields();
   m6goto('loop');
+  aiRefineTheme(g);   /* 配置了 AI 时，异步用 AI 修正主题分类（关键词匹配作离线兜底） */
+}
+/* AI 主题分类：只输出类别名；用户手动切换过主题则不覆盖 */
+function aiRefineTheme(goalText){
+  if(!aiReady()) return;
+  const cats = Object.keys(THEME_GROUPS).join('、');
+  aiComplete([
+    { role:'system', content:'你是分类器。只输出分类名本身，不输出引号、句号或任何其他内容。' },
+    { role:'user', content:'把这个目标分到最贴切的一类。类别只能选一个：'+cats+'。\n目标：「'+goalText+'」\n只输出类别名。' }
+  ], { stream:false }).then(r=>{
+    const out = String(r.content||'').trim();
+    const hit = Object.keys(THEME_GROUPS).find(k=>out.indexOf(k)>=0);
+    if(hit && S.goalText === goalText && !S._themeManual && S.themeTag !== hit){
+      S.themeTag = hit;
+      if(S.stage==='loop' || S.stage==='classify') m6goto(S.stage);
+    }
+  }).catch(()=>{});
 }
 function renderGoalAfter(){
   m6prog('目标释放 · 复盘');
@@ -4687,6 +4728,7 @@ function bindThemeChips(){
   box.querySelectorAll('.theme-chip').forEach(c=>{
     c.onclick = ()=>{
       S.themeTag = c.dataset.k;
+      S._themeManual = true;   /* 用户手动选过，AI 不再覆盖 */
       box.querySelectorAll('.theme-chip').forEach(x=>x.classList.toggle('on', x.dataset.k===S.themeTag));
     };
   });
@@ -4803,6 +4845,7 @@ function aiSystemText(forced){
     + (add ? ('\n\n—— 引导者补充设定（用户附加） ——\n'+add) : '');
 }
 
+function aiReady(){ try{ const c=aiLoadCfg(); return !!(c.base && c.key); }catch(e){ return false; } }
 function aiDefCfg(){
   return { prov:'deepseek', base:AI_PROVIDERS.deepseek.base, model:AI_PROVIDERS.deepseek.model,
            key:'', botName:'小释', sysPrompt:'', style:'gentle',
@@ -6218,7 +6261,7 @@ document.addEventListener('scroll', _editMenuHide, true);
 })();
 
 /* ============ 检查更新（GitHub Releases） ============ */
-const APP_VERSION = "1.0.18";
+const APP_VERSION = "1.0.19";
 const UPDATE_REPO = "1Xxuan/letit";
 function _cmpVer(a, b){
   const pa = String(a).split('.'), pb = String(b).split('.');
